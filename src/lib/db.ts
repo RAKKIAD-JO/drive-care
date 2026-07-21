@@ -20,14 +20,32 @@ function normalizeDatabaseUrl(url: string): string {
     return normalized;
 }
 
+function shouldUseSsl(url: string): boolean {
+    if (process.env.NODE_ENV === "production") {
+        return true;
+    }
+
+    try {
+        const parsed = new URL(url);
+        const host = parsed.hostname.toLowerCase();
+        const sslMode = parsed.searchParams.get("sslmode");
+
+        return host.includes("supabase.co") || sslMode === "require" || sslMode === "verify-full";
+    } catch {
+        return false;
+    }
+}
+
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
     throw new Error("DATABASE_URL is not set");
 }
 
+const normalizedDatabaseUrl = normalizeDatabaseUrl(databaseUrl);
+
 const pool = new Pool({
-    connectionString: normalizeDatabaseUrl(databaseUrl),
-    ...(process.env.NODE_ENV === "production"
+    connectionString: normalizedDatabaseUrl,
+    ...(shouldUseSsl(normalizedDatabaseUrl)
         ? { ssl: { rejectUnauthorized: false } }
         : {}),
 });

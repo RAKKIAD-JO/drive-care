@@ -1,3 +1,4 @@
+
 export type Notification = {
     id: string;
     title: string;

@@ -5,7 +5,9 @@ git clone https://github.com/Datadorf-co-ltd/paphop-driver-caregiver.git
 yarn install
 
 # Step 3: Create .env file
-Create .env file follow .env.example
+Create `.env` file from `.env.example`.
+For Supabase, set `DATABASE_URL` to the Postgres connection string from the Supabase dashboard:
+`postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres?sslmode=require`
 
 # Step 4: Run
 yarn dev
